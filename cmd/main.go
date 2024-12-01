@@ -78,9 +78,18 @@ func (s *server) subscribe(ctx context.Context, writer http.ResponseWriter, req 
 	}
 }
 
+func (s *server) broadcast(msg []byte) {
+	s.subscribersMutex.Lock()
+	for sub := range s.subscribers {
+		sub.msgs <- msg
+	}
+	s.subscribersMutex.Unlock()
+}
+
 func main() {
 	fmt.Println("Starting system monitor...")
-	go func() {
+	srv := NewServer()
+	go func(s *server) {
 		for {
 			systemSection, err := hardware.GetSystemSection()
 			if err != nil {
@@ -96,15 +105,24 @@ func main() {
 				fmt.Println(err)
 			}
 
-			fmt.Println(systemSection)
-			fmt.Println(diskSection)
-			fmt.Println(cpuSection)
+			//fmt.Println(systemSection)
+			//fmt.Println(diskSection)
+			//fmt.Println(cpuSection)
+
+			timeStamp := time.Now().Format("2006-01-02 15:04:05")
+			html := `
+			<div hx-swap-oob="innerHTML:#update-timestamp"> ` + timeStamp + `</div>
+			<div hx-swap-oob="innerHTML:#system-data"> ` + systemSection + `</div>
+			<div hx-swap-oob="innerHTML:#disk-data"> ` + diskSection + `</div>
+			<div hx-swap-oob="innerHTML:#cpu-data"> ` + cpuSection + `</div>
+			`
+
+			s.broadcast([]byte(html))
 
 			time.Sleep(3 * time.Second)
 		}
-	}()
+	}(srv)
 
-	srv := NewServer()
 	err := http.ListenAndServe(":8080", &srv.mux)
 	if err != nil {
 		fmt.Println(err)

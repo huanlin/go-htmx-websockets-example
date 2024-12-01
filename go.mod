@@ -2,7 +2,10 @@ module github.com/huanlin/go-htmx-websockets-example
 
 go 1.23.0
 
-require github.com/shirou/gopsutil/v4 v4.24.11
+require (
+	github.com/coder/websocket v1.8.12
+	github.com/shirou/gopsutil/v4 v4.24.11
+)
 
 require (
 	github.com/ebitengine/purego v0.8.1 // indirect

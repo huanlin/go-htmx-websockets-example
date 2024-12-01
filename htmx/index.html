@@ -1,16 +1,23 @@
 <html>
-    <head>
-        <title>Huanlin's hardware monitor example using Go+HTMX+Websockets</title>
-        <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/htmx-ext-ws@2.0.1/ws.js"></script>
-    </head>
-    <body>
-        <h1>Huanlin's hardware monitor</h1>
+
+<head>
+    <title>Huanlin's hardware monitor example using Go+HTMX+Websockets</title>
+    <script src="https://unpkg.com/htmx.org@2.0.3"
+        integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx-ext-ws@2.0.1/ws.js"></script>
+</head>
+
+<body>
+    <h1>Huanlin's hardware monitor</h1>
+    <div hx-ext="ws" ws-connect="ws://localhost:8080/ws" ws-reconnect="true" ws-reconnect-delay="1000">
         <div id="update-timestamp">Loading data...</div>
         <div id="monitor">
             <div id="system-data"></div>
             <div id="disk-data"></div>
             <div id="cpu-data"></div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
